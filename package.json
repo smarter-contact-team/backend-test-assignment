@@ -1,0 +1,63 @@
+{
+  "name": "backend-test-assignment",
+  "version": "1.0.0",
+  "description": "Back-end test assignment for smartercontact",
+  "main": "lib/index.js",
+  "scripts": {
+    "prebuild": "rm -rf lib",
+    "build": "tsc",
+    "lint": "eslint --ext .js,.ts .",
+    "start": "firebase emulators:start"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/smartercontact/backend-test-assignment/issues"
+  },
+  "homepage": "https://gitlab.com/smartercontact/backend-test-assignment#readme",
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-plugin-import": "^2.24.2",
+    "firebase-tools": "^11.0.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^2.18.0",
+    "firebase-admin": "^10.2.0",
+    "firebase-functions": "^3.15.7"
+  },
+  "engines": {
+    "node": "16",
+    "npm": "8"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "airbnb-typescript/base",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": [
+        "./tsconfig.json"
+      ],
+      "sourceType": "module"
+    },
+    "ignorePatterns": [
+      "/lib/**/*"
+    ],
+    "plugins": [
+      "@typescript-eslint",
+      "import"
+    ]
+  }
+}
