@@ -7,8 +7,10 @@
     "prebuild": "rm -rf lib",
     "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
-    "start": "node lib/main.js",
-    "dev": "npx mikro-orm migration:up && nodemon src/index.ts --monitor"
+    "start": "node lib/index.js",
+    "dev": "npx mikro-orm migration:up && nodemon src/index.ts --monitor",
+    "dev:empty": "npx mikro-orm migration:fresh && nodemon src/index.ts --monitor",
+    "migration": "npx mikro-orm migration:up"
   },
   "author": "",
   "license": "ISC",
@@ -33,7 +35,9 @@
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "fastify": "^4.3.0",
-    "fastify-mikro-orm": "^3.0.0"
+    "fastify-mikro-orm": "^3.0.0",
+    "fastify-plugin": "^4.0.0",
+    "ts-node": "^10.9.1"
   },
   "engines": {
     "node": "16",
@@ -43,7 +47,7 @@
     "useTsNode": true,
     "configPaths": [
       "./src/mikro-orm.config.ts",
-      "./dist/mikro-orm.config.js"
+      "./lib/mikro-orm.config.js"
     ]
   },
   "eslintConfig": {
