@@ -1,16 +1,21 @@
-
 import fastify from 'fastify';
 import fastifyMultipart from '@fastify/multipart';
-import axios from 'axios';
 import 'dotenv/config';
 import fastifyMikroORM  from 'fastify-mikro-orm';
-
-import { Contacts } from './entities/Contacts';
-
+import AllRoutes from './router';
 
 const server = fastify({ logger: true });
 
-void server.register(fastifyMultipart);
+void server.register(fastifyMultipart, {
+  limits: {
+    fieldNameSize: 1000, // Max field name size in bytes
+    fieldSize: 1000,     // Max field value size in bytes
+    fields: 100,         // Max number of non-file fields
+    fileSize: 1000000,  // For multipart forms, the max file size in bytes
+    files: 1,           // Max number of file fields
+    headerPairs: 2000,  // Max number of header key=>value pairs
+  },
+});
 
 void server.register(fastifyMikroORM, {
   entitiesTs: ['./src/entities/*.ts'],
@@ -19,67 +24,8 @@ void server.register(fastifyMikroORM, {
   type: 'sqlite',
 });
 
+void server.register(AllRoutes);
 
-interface VeriResponse {
-  phone_valid: boolean;
-}
-
-function validate(phone: string) {
-  return axios.get<VeriResponse>(process.env.VERIPHONE_URL ?? '', {
-    params: {
-      key: process.env.VERIPHONE_API_KEY,
-      phone: phone,
-    },
-  });
-}
-
-server.post('/upload', async (request, reply) => {
-  const data = await request.file();
-  const buffer = await data.toBuffer();
-  const fileString = buffer.toString('utf8');
-
-  const rows = fileString.split('\n');
-  const headers = rows.at(0)?.replace('\r', '').split(',') ?? [];
-
-  const contacts = rows.slice(1).map((row) => row
-    .replace('\r', '')
-    .split(',')
-    .reduce((prev, value, i) => ({
-      ...prev,
-      [headers.at(i) ?? '']: value,
-    }), {} as Record<string, string>));
-
-  for await (const contact of contacts) {
-    const dbCont = new Contacts();
-
-    dbCont.name = contact.Name;
-    dbCont.phone = contact.Phone;
-    dbCont.email = contact.Email;
-    dbCont.isValid = false;
-
-    try {
-      const res = await validate(contact.Phone);
-
-      if (res.data.phone_valid) {
-  
-        dbCont.isValid = true;
-      }
-    } catch {
-      request.log.error('invalid phone:', contact.Phone);
-    }
-
-    await request.mikroORM.orm.em.persistAndFlush(dbCont);
-  }
-
-  const validContacts = await request.mikroORM.orm.em.find(Contacts, { isValid: true });
-
-  void reply.code(200).send({
-    headers,
-    validContacts: validContacts.map(contact => contact.toJSON()),
-  });
-});
-
-// Start your server
 server.listen({ port: 8080 }, (err) => {
   if (err) {
     console.error(err);
