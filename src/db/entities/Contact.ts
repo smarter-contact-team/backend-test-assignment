@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity()
-export class Contacts extends BaseEntity<Contacts, 'id'> {
+export class Contact extends BaseEntity<Contact, 'id'> {
   @PrimaryKey({ autoincrement: true })
   id!: number;
 
@@ -11,7 +11,7 @@ export class Contacts extends BaseEntity<Contacts, 'id'> {
   @Property()
   email!: string;
 
-  @Property()
+  @Property({ unique: true })
   phone!: string;
 
   @Property()
