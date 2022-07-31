@@ -70,3 +70,5 @@ node_modules/
 
 # sqlite
 *.db
+
+.idea
