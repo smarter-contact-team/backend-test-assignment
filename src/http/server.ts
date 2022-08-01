@@ -14,7 +14,6 @@ DBManager.init().then(() => {
   app.log.error(error);
 });
 
-
 app.server.on('ready', () => {
   void app.register(fastifyMultipart);
   void app.register(useRoutes);
