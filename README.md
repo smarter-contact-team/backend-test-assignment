@@ -1,6 +1,6 @@
 # backend-test-assignment
 
-Use your knowledge about OOP, SOLID, and other best practices to make this code more readable and supportable.
+Use your knowledge about OOP, SOLID, DDD, and other best practices to make this code more readable and supportable.
 
 ## Requires
   - Your code changes should be sent via Pull Request.
